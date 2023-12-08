@@ -1,5 +1,6 @@
 import { Book } from '../entity/book.entity';
-import { BookRepo } from '../repository/book.repository';
+import { BookRepository } from '../repository/book.repository';
+import { UserRepository } from '../repository/user.repository';
 
 export interface IResponse {
   status: number;
@@ -8,10 +9,12 @@ export interface IResponse {
 }
 
 export class BookService {
-  private bookRepository: BookRepo;
+  private bookRepository: BookRepository;
+  private userRepository: UserRepository;
 
   constructor() {
-    this.bookRepository = new BookRepo();
+    this.bookRepository = new BookRepository();
+    this.userRepository = new UserRepository();
   }
 
   async createBook(
@@ -89,7 +92,48 @@ export class BookService {
         data: books,
       };
     } catch (err) {
+      console.log('\n\n\nerror --> ', err);
       throw new Error('Failed to fetch all books.');
+    }
+  }
+
+  async buyBook(bookId: number, userId: number): Promise<IResponse | null> {
+    try {
+      const book = await this.bookRepository.retrieveById(bookId);
+      if (!book) {
+        return {
+          status: 400,
+          message: 'Book not found.',
+        };
+      }
+      const user = await this.userRepository.retrieveByID(userId);
+      if (!user) {
+        return {
+          status: 400,
+          message: 'User not found.',
+        };
+      }
+      if (book.price > user.balance) {
+        return {
+          status: 400,
+          message: 'Insufficient balance.',
+        };
+      }
+      user.balance -= book.price;
+      await user.save();
+
+      // make the book owner the id of the user
+      book.owner = userId;
+      await book.save();
+
+      return {
+        status: 200,
+        message: 'Successfully purchased book.',
+        data: book,
+      };
+    } catch (error) {
+      console.log('error --> ', error);
+      throw new Error('Failed to purchase book.');
     }
   }
 }

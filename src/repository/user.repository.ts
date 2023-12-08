@@ -1,4 +1,5 @@
 import { User } from '../entity/user.entity';
+import { IResponse } from '../services/book.services';
 
 interface IUserRepository {
   save(user: User): Promise<User | null>;
@@ -76,6 +77,24 @@ export class UserRepository implements IUserRepository {
       const foundUser = await User.findOne({
         where: {
           email: email,
+        },
+      });
+
+      if (!foundUser) {
+        return null;
+      }
+
+      return foundUser;
+    } catch (error) {
+      throw new Error('Failed to retrieve user by email!');
+    }
+  }
+
+  async retrieveByID(id: number): Promise<User | null> {
+    try {
+      const foundUser = await User.findOne({
+        where: {
+          id: id,
         },
       });
 

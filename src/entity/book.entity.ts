@@ -11,6 +11,7 @@ export class Book extends Model {
   public static BOOK_COVER_IMAGE = 'cover_image' as string;
   public static BOOK_PRICE = 'price' as string;
   public static BOOK_TAGS = 'tags' as string;
+  public static BOOK_OWNER = 'owner' as string;
 
   @Column({
     type: DataType.INTEGER,
@@ -19,6 +20,13 @@ export class Book extends Model {
     field: Book.BOOK_ID,
   })
   id!: number;
+
+  @Column({
+    type: DataType.INTEGER,
+    field: Book.BOOK_OWNER,
+    defaultValue: null,
+  })
+  owner!: number;
 
   @Column({
     type: DataType.STRING(100),

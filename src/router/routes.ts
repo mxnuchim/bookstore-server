@@ -30,6 +30,10 @@ class Routes extends BaseRoutes {
       this.bookController.findById(req, res)
     );
 
+    this.router.post('/books/purchase/:id', (req: Request, res: Response) =>
+      this.bookController.buyBook(req, res)
+    );
+
     {
       /** <----- Auth Routes -----> */
     }

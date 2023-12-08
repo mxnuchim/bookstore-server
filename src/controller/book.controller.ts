@@ -50,6 +50,23 @@ export class BookController {
 
       res.json(response);
     } catch (err) {
+      console.log('error --> ', err);
+      res.status(500).json({
+        status: 'Something went wrong',
+        message: 'Something went wrong',
+      });
+    }
+  }
+
+  async buyBook(req: Request, res: Response) {
+    try {
+      const bookId = parseInt(req.params['id']);
+      const { userId } = req.body;
+
+      const response = await this.bookService.buyBook(bookId, userId);
+
+      res.json(response);
+    } catch (error) {
       res.status(500).json({
         status: 'Something went wrong',
         message: 'Something went wrong',
