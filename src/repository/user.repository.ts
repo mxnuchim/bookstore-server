@@ -1,6 +1,6 @@
 import { User } from '../entity/user.entity';
 
-interface IUserRepo {
+interface IUserRepository {
   save(user: User): Promise<User | null>;
   update(user: User): Promise<User | null>;
   delete(userId: number): Promise<void | null>;
@@ -9,7 +9,7 @@ interface IUserRepo {
   deduct(userId: number, amount: number): Promise<void | null>;
 }
 
-export class UserRepo implements IUserRepo {
+export class UserRepository implements IUserRepository {
   async save(user: User): Promise<User | null> {
     try {
       const newUser: User = await User.create({

@@ -1,6 +1,12 @@
 import { Book } from '../entity/book.entity';
 import { BookRepo } from '../repository/book.repository';
 
+export interface IResponse {
+  status: number;
+  message: string;
+  data?: any;
+}
+
 export class BookService {
   private bookRepository: BookRepo;
 
@@ -14,8 +20,14 @@ export class BookService {
     cover_image: string,
     price: number,
     tags: Array<string>
-  ): Promise<Book | null> {
+  ): Promise<IResponse | null> {
     try {
+      if (!title || !writer || !cover_image || !price || !tags) {
+        return {
+          status: 400,
+          message: 'All fields are required!',
+        };
+      }
       const new_book = new Book();
       new_book.title = title;
       new_book.writer = writer;
@@ -24,62 +36,60 @@ export class BookService {
       new_book.tags = tags;
 
       const created_book = await this.bookRepository.save(new_book);
-      return created_book;
+      if (!created_book) {
+        return {
+          status: 500,
+          message: 'Failed to create book.',
+        };
+      } else {
+        return {
+          status: 200,
+          message: 'Successfully created book.',
+          data: created_book,
+        };
+      }
     } catch (err) {
       throw new Error('Failed to create book.');
     }
   }
 
-  async deleteBook(id: number): Promise<void> {
-    try {
-      await this.bookRepository.delete(id);
-    } catch (err) {
-      throw new Error('Failed to delete book.');
-    }
-  }
-
-  async findBookById(id: number): Promise<Book | null> {
+  async findBookById(id: number): Promise<IResponse | null> {
     try {
       const book = await this.bookRepository.retrieveById(id);
 
       if (!Boolean(book)) {
-        return null;
+        return {
+          status: 400,
+          message: 'Book not found.',
+        };
       }
-      return book;
+      return {
+        status: 200,
+        message: 'Successfully fetched book by id.',
+        data: book,
+      };
     } catch (err) {
       throw new Error('Failed to fetch book by id.');
     }
   }
 
-  async findAllBooks(): Promise<Book[] | null> {
+  async findAllBooks(): Promise<IResponse | null> {
     try {
       const books = await this.bookRepository.retrieveAll();
 
       if (!Boolean(books)) {
-        return null;
+        return {
+          status: 400,
+          message: 'Books not found.',
+        };
       }
-      return books;
+      return {
+        status: 200,
+        message: 'Successfully fetched all books.',
+        data: books,
+      };
     } catch (err) {
       throw new Error('Failed to fetch all books.');
-    }
-  }
-
-  async updateBook(
-    id: number,
-    title: string,
-    writer: string
-  ): Promise<Book | null> {
-    try {
-      const updatedBook = new Book();
-      updatedBook.id = id;
-      updatedBook.title = title;
-      updatedBook.writer = writer;
-
-      const response = await this.bookRepository.update(updatedBook);
-
-      return response;
-    } catch (err) {
-      throw new Error('Failed to update book.');
     }
   }
 }
