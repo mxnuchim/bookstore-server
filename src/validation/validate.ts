@@ -13,7 +13,7 @@ const validate =
 
       return next();
     } catch (err: any) {
-      console.log('error dey');
+      console.log('error dey --> ', err);
       const error_message = JSON.parse(err.message);
       return res.status(400).json({
         status: 'Bad Request!',

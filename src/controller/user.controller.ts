@@ -39,6 +39,8 @@ export class UserController {
   }
 
   async getUserBooks(req: Request, res: Response) {
+    console.log('\n\n\ngetting books for user with id --> ', req.params.id);
+
     try {
       const userId = parseInt(req.params.id);
       const response = await this.userService.getUserBooks(userId);

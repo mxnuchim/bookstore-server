@@ -3,6 +3,7 @@ import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
 import Database from './config/database';
 import BooksRouter from './router/routes';
+import cors from 'cors';
 
 class App {
   public app: Application;
@@ -28,6 +29,12 @@ class App {
     this.app.route('/').get((req: Request, res: Response) => {
       res.send('welcome home');
     });
+    this.app.use(
+      cors({
+        origin: '*',
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      })
+    );
     this.app.use('/api', BooksRouter);
 
     const options = {

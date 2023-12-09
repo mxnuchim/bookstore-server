@@ -2,7 +2,10 @@ import { Request, Response } from 'express';
 import { BookController } from '../controller/book.controller';
 import { AuthController } from '../controller/auth.controllers';
 import validate from '../validation/validate';
-import { createBookSchema } from '../validation/validation.schema';
+import {
+  createBookSchema,
+  createUserSchema,
+} from '../validation/validation.schema';
 import BaseRoutes from './base/base.router';
 import { UserController } from '../controller/user.controller';
 
@@ -50,6 +53,10 @@ class Routes extends BaseRoutes {
       '/books',
       validate(createBookSchema),
       (req: Request, res: Response) => this.bookController.create(req, res)
+    );
+
+    this.router.post('/books-multiple', (req: Request, res: Response) =>
+      this.bookController.createMultiple(req, res)
     );
 
     /**
@@ -165,8 +172,10 @@ class Routes extends BaseRoutes {
      *       500:
      *         description: Internal Server Error
      */
-    this.router.post('/user/signup', (req: Request, res: Response) =>
-      this.authController.signup(req, res)
+    this.router.post(
+      '/user/signup',
+      validate(createUserSchema),
+      (req: Request, res: Response) => this.authController.signup(req, res)
     );
 
     /**

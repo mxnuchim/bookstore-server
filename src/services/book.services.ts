@@ -55,6 +55,57 @@ export class BookService {
       throw new Error('Failed to create book.');
     }
   }
+  async createBooks(books: Array<Book>): Promise<IResponse | null> {
+    try {
+      if (!books || !books.length) {
+        return {
+          status: 400,
+          message: 'All fields are required!',
+        };
+      }
+
+      const bookPromises = books.map(async (book) => {
+        const new_book = new Book();
+        new_book.title = book.title;
+        new_book.writer = book.writer;
+        new_book.cover_image = book.cover_image;
+        new_book.price = book.price;
+        new_book.tags = book.tags;
+
+        const created_book = await this.bookRepository.save(new_book);
+
+        if (!created_book) {
+          return {
+            status: 500,
+            message: 'Failed to create book.',
+          };
+        } else {
+          return {
+            status: 200,
+            message: 'Successfully created book.',
+            data: created_book,
+          };
+        }
+      });
+
+      const results = await Promise.all(bookPromises);
+
+      // Check if any of the creations failed
+      const errorResult = results.find((result) => result.status !== 200);
+      if (errorResult) {
+        return errorResult;
+      }
+
+      // All creations were successful
+      return {
+        status: 200,
+        message: 'All books created successfully.',
+        data: results.map((result) => result.data),
+      };
+    } catch (err) {
+      throw new Error('Failed to create books.');
+    }
+  }
 
   async findBookById(id: number): Promise<IResponse | null> {
     try {
@@ -119,6 +170,7 @@ export class BookService {
           message: 'Insufficient balance.',
         };
       }
+
       user.balance -= book.price;
       await user.save();
 

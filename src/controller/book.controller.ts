@@ -29,6 +29,21 @@ export class BookController {
     }
   }
 
+  async createMultiple(req: Request, res: Response) {
+    try {
+      const { books } = req.body;
+      const response = await this.bookService.createBooks(books);
+
+      res.json(response);
+    } catch (err) {
+      console.log('error --> ', err);
+      res.status(500).json({
+        status: 'Something went wrong',
+        message: 'Something went wrong',
+      });
+    }
+  }
+
   async findById(req: Request, res: Response) {
     try {
       let id = parseInt(req.params['id']);

@@ -19,3 +19,17 @@ export const createBookSchema = z.object({
       .min(1, { message: 'Tags must have at least 1 element!' }),
   }),
 });
+export const createUserSchema = z.object({
+  body: z.object({
+    name: z
+      .string()
+      .min(1, { message: 'Name must be greater than 1 characters!' }),
+    email: z
+      .string()
+      .min(1, { message: 'Email must be greater than 1 characters!' })
+      .email({ message: 'Email must be valid!' }),
+    password: z
+      .string()
+      .min(6, { message: 'Password must be greater than 6 characters!' }),
+  }),
+});
