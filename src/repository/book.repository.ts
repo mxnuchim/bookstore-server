@@ -1,4 +1,4 @@
-import { Book } from '../entity/book.entity';
+import Book from '../entity/book.entity';
 
 interface IBookRepository {
   save(book: Book): Promise<Book | null>;

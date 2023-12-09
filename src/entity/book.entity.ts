@@ -3,7 +3,7 @@ import { Model, Table, Column, DataType } from 'sequelize-typescript';
 @Table({
   tableName: Book.BOOK_TABLE_NAME,
 })
-export class Book extends Model {
+export default class Book extends Model {
   public static BOOK_TABLE_NAME = 'books' as string;
   public static BOOK_ID = 'id' as string;
   public static BOOK_TITLE = 'title' as string;

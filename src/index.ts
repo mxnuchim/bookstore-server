@@ -1,4 +1,6 @@
 import express, { Application, Request, Response } from 'express';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUI from 'swagger-ui-express';
 import Database from './config/database';
 import BooksRouter from './router/routes';
 
@@ -26,7 +28,38 @@ class App {
     this.app.route('/').get((req: Request, res: Response) => {
       res.send('welcome home');
     });
-    this.app.use('/api/v1', BooksRouter);
+    this.app.use('/api', BooksRouter);
+
+    const options = {
+      definition: {
+        openapi: '3.0.0',
+        info: {
+          title:
+            'BookStore API with TypeScript, Express, PostgreSQL, and Swagger',
+          version: '0.1.0',
+          description:
+            'This is a simple Bookstore API application made with Express and documented with Swagger',
+          license: {
+            name: 'MIT',
+            url: 'https://spdx.org/licenses/MIT.html',
+          },
+          contact: {
+            name: 'Manuchimso Oliver',
+            url: 'www.manuchim.com',
+            email: 'manuchimoliver779@gmail.com',
+          },
+        },
+        servers: [
+          {
+            url: 'http://localhost:8080/api',
+          },
+        ],
+      },
+      apis: ['src/router/*.ts'],
+    };
+
+    const specs = swaggerJSDoc(options);
+    this.app.use('/api/docs', swaggerUI.serve, swaggerUI.setup(specs));
   }
 }
 

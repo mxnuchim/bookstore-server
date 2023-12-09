@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import * as dotenv from 'dotenv';
-import { Book } from '../entity/book.entity';
+import Book from '../entity/book.entity';
 import { User } from '../entity/user.entity';
 dotenv.config();
 

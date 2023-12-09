@@ -1,13 +1,19 @@
+import Book from '../entity/book.entity';
 import { User } from '../entity/user.entity';
-import { IResponse } from '../services/book.services';
 
 interface IUserRepository {
   save(user: User): Promise<User | null>;
   update(user: User): Promise<User | null>;
   delete(userId: number): Promise<void | null>;
+  createUser(
+    email: string,
+    name: string,
+    password: string
+  ): Promise<User | null>;
   retrieveByEmail(email: string): Promise<User | null>;
+  retrieveById(id: string): Promise<User | null>;
   retrieveAll(): Promise<User[] | null>;
-  deduct(userId: number, amount: number): Promise<void | null>;
+  getUserBooks(userId: number): Promise<Book[] | null>;
 }
 
 export class UserRepository implements IUserRepository {
@@ -90,6 +96,24 @@ export class UserRepository implements IUserRepository {
     }
   }
 
+  async retrieveById(id: string): Promise<User | null> {
+    try {
+      const foundUser = await User.findOne({
+        where: {
+          id: id,
+        },
+      });
+
+      if (!foundUser) {
+        return null;
+      }
+
+      return foundUser;
+    } catch (error) {
+      throw new Error('Failed to retrieve user by email!');
+    }
+  }
+
   async retrieveByID(id: number): Promise<User | null> {
     try {
       const foundUser = await User.findOne({
@@ -121,29 +145,7 @@ export class UserRepository implements IUserRepository {
       throw new Error('Failed to retrieve all users!');
     }
   }
-  async deduct(userId: number, amount: number): Promise<void | null> {
-    try {
-      const userToUpdate = await User.findOne({
-        where: {
-          id: userId,
-        },
-      });
 
-      if (!userToUpdate) {
-        return null;
-      }
-
-      // Ensure the balance is sufficient before reducing
-      if (userToUpdate.balance >= amount) {
-        userToUpdate.balance -= amount;
-        await userToUpdate.save();
-      } else {
-        throw new Error('Insufficient balance.');
-      }
-    } catch (error) {
-      throw new Error('Failed to reduce user balance.');
-    }
-  }
   async createUser(
     email: string,
     name: string,
@@ -182,6 +184,31 @@ export class UserRepository implements IUserRepository {
       }
     } catch (error) {
       throw new Error('Failed to authenticate user.');
+    }
+  }
+
+  async getUserBooks(userId: number): Promise<Book[] | null> {
+    try {
+      const user = await User.findOne({
+        where: { id: userId },
+      });
+
+      if (!user) {
+        return null;
+      }
+
+      // Access the books associated with the user
+      const books = await Book.findAll({
+        where: { owner: userId },
+      });
+
+      if (!books) {
+        return null;
+      }
+
+      return books;
+    } catch (error) {
+      throw new Error('Failed to retrieve user books.');
     }
   }
 }

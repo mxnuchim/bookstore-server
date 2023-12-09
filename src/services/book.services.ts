@@ -1,4 +1,4 @@
-import { Book } from '../entity/book.entity';
+import Book from '../entity/book.entity';
 import { BookRepository } from '../repository/book.repository';
 import { UserRepository } from '../repository/user.repository';
 
