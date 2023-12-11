@@ -68,7 +68,7 @@ class App {
         },
         servers: [
           {
-            url: 'http://ec2-3-94-190-53.compute-1.amazonaws.com:8080/api',
+            url: 'https://bookstore-server-production-2fff.up.railway.app/api',
           },
         ],
       },
