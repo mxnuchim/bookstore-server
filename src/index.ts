@@ -27,7 +27,14 @@ class App {
 
   protected routes(): void {
     this.app.route('/').get((req: Request, res: Response) => {
-      res.send('welcome home');
+      res.json(
+        "You've reached the server. Please access the routes by adding /api suffix"
+      );
+    });
+    this.app.route('/api').get((req: Request, res: Response) => {
+      res.json(
+        'Welcome to the BookStore Server. This is the root endpoint. Please feel free to explore'
+      );
     });
     this.app.use(
       cors({
