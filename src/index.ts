@@ -4,6 +4,9 @@ import swaggerUI from 'swagger-ui-express';
 import Database from './config/database';
 import BooksRouter from './router/routes';
 import cors from 'cors';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 class App {
   public app: Application;
@@ -77,7 +80,7 @@ class App {
   }
 }
 
-const port: number = 8080;
+const port: number = parseInt(process.env.PORT || '');
 const app = new App().app;
 
 app.listen(port, () => {
