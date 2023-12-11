@@ -65,7 +65,7 @@ class App {
         },
         servers: [
           {
-            url: 'http://localhost:8080/api',
+            url: 'http://ec2-3-94-190-53.compute-1.amazonaws.com:8080/api',
           },
         ],
       },
